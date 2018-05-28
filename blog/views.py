@@ -58,7 +58,21 @@ def blog_single_page(request,bid):
     blog = get_object_or_404(Blog, pk=bid)
     blog.increase_views()
 
-    ip = request.META.get("HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR", None))
+
+    #ip = request.META.get("HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR", None))
+
+    try:
+        real_ip = request.META['HTTP_X_FORWARDED_FOR']
+    except KeyError:
+        pass
+    else:
+        real_ip = real_ip.split(",")[0]
+
+        request.META['REMOTE_ADDR'] = real_ip
+
+    ip = request.META.get("REMOTE_ADDR",None)
+
+
 
     try:
         user = get_object_or_404(User, ip=ip)
