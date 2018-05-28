@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <title>Blog</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link type="text/css" rel='stylesheet' href="{% static 'css/bootstrap.css' %}">
+    <link type="text/css" rel='stylesheet' href="{% static 'css/bootstrap-theme.css' %}">
+    <link type="text/css" rel='stylesheet' href="{% static 'css/bootstrap.min.css' %}">
+    <link type="text/css" data-themecolor="default" rel='stylesheet' href="{% static 'css/main-default.css' %}">
+</head>
+<body>
+<div class="mask-l"
+     style="background-color: #fff; width: 100%; height: 100%; position: fixed; top: 0; left:0; z-index: 9999999;"></div>
+<!--removed by integration-->
+<header class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar">主页</span>
+                <span class="icon-bar">博客</span>
+            </button>
+            <a class="navbar-brand" style="color:#cc9900">X'Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="/">首页</a></li>
+                <li class="active"><a href="/blog/">博客</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" method="get" action="/search">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search" name="kw">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+
+        </div><!-- /.navbar-collapse -->
+    </div>
+</header>
+<br><br><br>
+<div class="j-menu-container"></div>
+<div class="l-main-container">
+
+    <div class="l-inner-page-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 col-md-push-3">
+
+                    <br>
+                    <br>
+                    <br>
+                    <h2 style="color:#cc9900">与"{{ kw }}"相关的文章:</h2>
+
+                    {% for blog in bloglist %}
+
+                    <div class="b-blog-listing__block">
+                        <div class="b-blog-listing__block-top">
+                            <!--<div class="b-video-player view view-sixth">
+                                <!--<img data-retina="" src="{% static 'img/blog/blog_listing.jpg' %}" alt="">
+
+                            </div>-->
+                        </div>
+                        <div class="b-infoblock-with-icon b-blog-listing__infoblock">
+                            <a href="#"
+                               class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate hidden-xs">
+                            </a>
+                            <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                                <a href="/blog/{{ blog.id }}"
+                                   class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-l b-title-b-hr f-title-b-hr">
+                                    {{ blog.title }}
+                                </a>
+                                <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text f-primary-b b-blog-listing__pretitle">
+                                    {{ blog.publish_date }}
+                                </div>
+                                <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text c-primary b-blog-listing__text">
+                                    {{ blog.blog_text|truncatechars:300 }}
+                                </div>
+                                <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                    <a href="/blog/{{ blog.id }}" class="f-more f-primary-b">Read more</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% empty %}
+                    <h3 style="text-align:center">没有相关文章，请重新搜索。</h3>
+                    {% endfor %}
+                </div>
+
+                <div class="col-md-3 col-md-pull-9">
+
+                    <div class="row b-col-default-indent">
+                        <div class="col-md-12">
+                            <div>
+                                <h4 class="f-primary-b b-h4-special f-h4-special--gray f-h4-special">你的位置</h4>
+                                <ol class="breadcrumb">
+                                    <li><a href="/blog/" style="color:#cc9900">Blog</a></li>
+                                    <li class="active">Search</a></li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="b-categories-filter">
+                                <h4 class="f-primary-b b-h4-special f-h4-special--gray f-h4-special">专栏</h4>
+                                <ul>
+
+                                    {% for c in catelist %}
+                                    {% if forloop.counter < 6 %}
+                                    <li>
+                                        <a class="f-categories-filter_name" href="/blog/category/{{ c.0.id }}">
+                                            {{ c.0.name }}</a>
+                                        <span class="b-categories-filter_count f-categories-filter_count">{{ c.1 }}</span>
+                                    </li>
+                                    {% elif forloop.counter == 6 %}
+                                    <li>
+                                        <a class="f-categories-filter_name" href="/blog/category/">其他专栏</a>
+                                        <span class="b-categories-filter_count f-categories-filter_count">...</span>
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4 class="f-primary-b b-h4-special  f-h4-special--gray f-h4-special">最热文章</h4>
+
+                            <div class="b-blog-short-post b-blog-short-post--img-hover-bordered b-blog-short-post--w-img f-blog-short-post--w-img row">
+                                <div class="b-blog-short-post b-blog-short-post--img-hover-bordered b-blog-short-post--w-img f-blog-short-post--w-img row">
+                                    <div class="b-blog-short-post--popular col-md-12  col-xs-12 f-primary-b">
+                                        <div class="b-blog-short-post__item_img">
+                                            <a href="/blog/{{ top5.0.id }}"><img data-retina
+                                                                                 src="{% static 'img/gallery/sm/gallery_1.jpg' %}"
+                                                                                 alt=""/></a>
+                                        </div>
+                                        <div class="b-remaining">
+                                            <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                                                <a href="/blog/{{ top5.0.id }}">{{ top5.0.title }}</a>
+                                            </div>
+                                            <div class="b-blog-short-post__item_date f-blog-short-post__item_date f-primary-it">
+                                                浏览次数:{{ top5.0.visitedtime }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="b-blog-short-post--popular col-md-12  col-xs-12 f-primary-b">
+                                        <div class="b-blog-short-post__item_img">
+                                            <a href="/blog/{{ top5.1.id }}"><img data-retina
+                                                                                 src="{% static 'img/gallery/sm/gallery_2.jpg' %}"
+                                                                                 alt=""/></a>
+                                        </div>
+                                        <div class="b-remaining">
+                                            <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                                                <a href="/blog/{{ top5.1.id }}">{{ top5.1.title }}</a>
+                                            </div>
+                                            <div class="b-blog-short-post__item_date f-blog-short-post__item_date f-primary-it">
+                                                浏览次数:{{ top5.1.visitedtime }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="b-blog-short-post--popular col-md-12  col-xs-12 f-primary-b">
+                                        <div class="b-blog-short-post__item_img">
+                                            <a href="/blog/{{ top5.2.id }}"><img data-retina
+                                                                                 src="{% static 'img/gallery/sm/gallery_3.jpg' %}"
+                                                                                 alt=""/></a>
+                                        </div>
+                                        <div class="b-remaining">
+                                            <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                                                <a href="/blog/{{ top5.2.id }}">{{ top5.2.title }}</a>
+                                            </div>
+                                            <div class="b-blog-short-post__item_date f-blog-short-post__item_date f-primary-it">
+                                                浏览次数:{{ top5.2.visitedtime }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="b-blog-short-post--popular col-md-12  col-xs-12 f-primary-b">
+                                        <div class="b-blog-short-post__item_img">
+                                            <a href="/blog/{{ top5.3.id }}"><img data-retina
+                                                                                 src="{% static 'img/gallery/sm/gallery_4.jpg' %}"
+                                                                                 alt=""/></a>
+                                        </div>
+                                        <div class="b-remaining">
+                                            <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                                                <a href="/blog/{{ top5.3id }}">{{ top5.3.title }}</a>
+                                            </div>
+                                            <div class="b-blog-short-post__item_date f-blog-short-post__item_date f-primary-it">
+                                                浏览次数:{{ top5.3.visitedtime }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="b-blog-short-post--popular col-md-12  col-xs-12 f-primary-b @@hidden">
+                                        <div class="b-blog-short-post__item_img">
+                                            <a href="/blog/{{ top5.4.id }}"><img data-retina
+                                                                                 src="{% static 'img/gallery/sm/gallery_5.jpg' %}"
+                                                                                 alt=""/></a>
+                                        </div>
+                                        <div class="b-remaining">
+                                            <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                                                <a href="/blog/{{ top5.4.id }}">{{ top5.4.title }}</a>
+                                            </div>
+                                            <div class="b-blog-short-post__item_date f-blog-short-post__item_date f-primary-it">
+                                                浏览次数:{{ top5.4.visitedtime }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4 class="f-primary-b b-h4-special f-h4-special--gray f-h4-special">标签分类</h4>
+                            <div>
+                                {% for tag in tags %}
+                                <a class="f-tag b-tag" href="/blog/tag/{{ tag.id }}">{{ tag.name }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<footer>
+    <div class="b-footer-primary">
+        <div class="container">
+            <div class="row">
+                <nav class="navbar-left f-copyright">
+                    <ul>Copyright © 2018 - All Rights Reserved .</ul>
+                </nav>
+                <nav class="navbar-right f-copyright">
+                    <ul>
+                        <a href="#" class="back-to-top"> 回到顶部 </a>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<script src="{% static 'js/jquery/jquery-1.11.1.min.js' %}"></script>
+<!-- bootstrap -->
+<script src="{% static 'js/bootstrap.js' %}"></script>
+<script src="{% static 'js/npm.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<!-- end bootstrap -->
+
+
+<!-- Modules -->
+<script src="{% static 'js/modules/color-themes.js' %}"></script>
+<!-- End Modules -->
+
+<script src="{% static 'js/cookie.js' %}"></script>
+
+
+</body>
+
+
+</html>
